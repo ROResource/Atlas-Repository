@@ -48,32 +48,33 @@ window.addEventListener('DOMContentLoaded', () => {
 
         document.addEventListener('touchstart', (event) => {
             if (event.touches.length === 1) {
+                event.preventDefault();  // stop window scroll
                 touchStartY = event.touches[0].clientY;
                 scrollDirection = 0;
-
-                // Start interval to scroll repeatedly
+        
                 scrollInterval = setInterval(() => {
                     if (scrollDirection === 1 && app.page < app.pagesCount) {
                         app.page++;
                     } else if (scrollDirection === -1 && app.page > 1) {
                         app.page--;
                     }
-                }, 250);  // adjust speed (lower = faster)
+                }, 250);
             }
-        });
-
+        }, { passive: false });
+        
         document.addEventListener('touchmove', (event) => {
             if (event.touches.length === 1) {
+                event.preventDefault();  // stop window scroll
                 const currentY = event.touches[0].clientY;
                 const deltaY = touchStartY - currentY;
-
-                if (Math.abs(deltaY) > 30) {  // ignore small jitters
+        
+                if (Math.abs(deltaY) > 30) {
                     scrollDirection = deltaY > 0 ? 1 : -1;
                 } else {
-                    scrollDirection = 0;  // stop if no strong movement
+                    scrollDirection = 0;
                 }
             }
-        });
+        }, { passive: false });
 
         document.addEventListener('touchend', (event) => {
             clearInterval(scrollInterval);
