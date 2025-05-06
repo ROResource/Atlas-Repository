@@ -31,16 +31,13 @@ window.addEventListener('DOMContentLoaded', () => {
 
         app.pdfViewer.scrollMode = 3;
 
-        app.eventBus.on('pagechanging', (evt) => {
-            const currentPage = evt.pageNumber;
-            preloadAdjacentPages(app, currentPage, 3); // preload 3 forward/back
-            preloadSpecificPage(app, 3); // always preload page 3
-        });
+        let touchStartY = 0;
+        let scrollDirection = 0;  // +1 = forward, -1 = backward
+        let scrollInterval;
 
         document.addEventListener('wheel', (event) => {
             if (app.pdfViewer.scrollMode === 3) {
                 event.preventDefault();
-
                 if (event.deltaY > 0) {
                     app.page++;
                 } else if (event.deltaY < 0) {
@@ -48,8 +45,45 @@ window.addEventListener('DOMContentLoaded', () => {
                 }
             }
         }, { passive: false });
+
+        document.addEventListener('touchstart', (event) => {
+            if (event.touches.length === 1) {
+                touchStartY = event.touches[0].clientY;
+                scrollDirection = 0;
+
+                // Start interval to scroll repeatedly
+                scrollInterval = setInterval(() => {
+                    if (scrollDirection === 1 && app.page < app.pagesCount) {
+                        app.page++;
+                    } else if (scrollDirection === -1 && app.page > 1) {
+                        app.page--;
+                    }
+                }, 250);  // adjust speed (lower = faster)
+            }
+        });
+
+        document.addEventListener('touchmove', (event) => {
+            if (event.touches.length === 1) {
+                const currentY = event.touches[0].clientY;
+                const deltaY = touchStartY - currentY;
+
+                if (Math.abs(deltaY) > 30) {  // ignore small jitters
+                    scrollDirection = deltaY > 0 ? 1 : -1;
+                } else {
+                    scrollDirection = 0;  // stop if no strong movement
+                }
+            }
+        });
+
+        document.addEventListener('touchend', (event) => {
+            clearInterval(scrollInterval);
+            scrollDirection = 0;
+        });
     });
 });
+
+
+
 
 // Preload nearby pages
 function preloadAdjacentPages(app, currentPage, range = 3) {
