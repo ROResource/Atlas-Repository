@@ -1,0 +1,212 @@
+/* Reset basic margins */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body and html take full height */
+html, body {
+    height: 100%;
+    font-family: Arial, sans-serif;
+    background: #e4f1fd;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header stays on top */
+#header {
+    background: #333;
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+/* Main content scrolls if too tall */
+#mainContent {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    max-height: calc(100vh - 100px); /* adjust based on header height */
+    background: inherit;
+}
+
+/* Atlas container placeholder */
+#atlas-container {
+    min-height: auto;
+    background: rgba(187, 228, 203, 0.517);
+    border: 3px solid #000000;
+    padding: 10px;
+    text-align: center;
+    margin-bottom: 15px;
+    font-weight: bold;
+    font-size: large;
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    
+    .panel-content {
+        display: none;
+        padding: 10px
+    }
+    .group-header {
+        padding: 10px;
+        font-weight: bold;
+        background: #3e8158;
+        border: 2px solid #000000;
+    }.group:not(:last-child) {
+        margin-bottom: 15px;
+    }
+    .group-content {
+        display: none;
+        padding: 10px;
+        border: 2px solid #000000;
+        margin-bottom: 15px;
+        background: #ffffff;
+        cursor: pointer;
+        list-style-type: none;
+    }
+    
+    .group:nth-of-type(1) .group-header { background: #f0bab8; }
+    .group:nth-of-type(2) .group-header { background: #8b8e91; }
+    .group:nth-of-type(3) .group-header { background: #4468dd; }
+    .group:nth-of-type(4) .group-header { background: #d884d8; }
+    .group:nth-of-type(5) .group-header { background: #eded4e; }
+    .group:nth-of-type(6) .group-header { background: #5cb85c; }
+    .group:nth-of-type(7) .group-header { background: #d9534f; }
+    .group:nth-of-type(8) .group-header { background: #f96800; }
+    .group:nth-of-type(9) .group-header { background: green; }
+    }
+
+
+/* Container holding all guidelines */
+#guidelines-container {
+    min-height: auto;
+    background: rgba(0, 102, 128, 0.233);
+    border: 3px solid #000000;
+    padding: 10px;
+    text-align: center;
+    margin-bottom: 15px;
+    font-weight: bold;
+    font-size: large;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    cursor: pointer;
+}
+
+/* Each collapsible panel */
+.panel {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Content inside each panel, hidden by default */
+.panel-content {
+    display: none;
+    padding: 10px;
+}
+
+/* Group header (e.g., Cancer Site) */
+.group-header {
+    padding: 10px;
+    font-weight: bold;
+    background: #3e8158;
+    color: #ffffff;
+    border: 2px solid #000000;
+    cursor: pointer;
+}
+
+/* Add spacing between groups */
+.group:not(:last-child) {
+    margin-bottom: 15px;
+}
+
+/* Table inside each group */
+.group-content {
+    box-sizing: border-box;
+    display: none;                  /* hidden by default, toggled by JS */
+    width: 100%;                    /* stretch to fill panel */
+    padding: 10px;
+    border: 2px solid #000000;
+    margin-bottom: 15px;
+    background: white;
+    border-collapse: collapse;
+    table-layout: auto;
+}  
+.group-content {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.group-content td:nth-child(2) {
+    width: 100%;
+}
+
+.group-content tr {
+    border-bottom: 1px solid #ddd;   /* faint line between rows */
+}
+
+.group-content td {
+    padding: 8px 5px;               /* vertical + horizontal padding inside cells */
+}
+
+/* Optional: align last column (Open PDF) to the right */
+.group-content td:last-child {
+    text-align: right;
+    white-space: nowrap;
+}
+
+    
+    .group:nth-of-type(1) .group-header { background: #f0bab8; }
+    .group:nth-of-type(2) .group-header { background: #8b8e91; }
+    .group:nth-of-type(3) .group-header { background: #4468dd; }
+    .group:nth-of-type(4) .group-header { background: #d884d8; }
+    .group:nth-of-type(5) .group-header { background: #eded4e; }
+    .group:nth-of-type(6) .group-header { background: #5cb85c; }
+    .group:nth-of-type(7) .group-header { background: #d9534f; }
+    .group:nth-of-type(8) .group-header { background: #f96800; }
+    .group:nth-of-type(9) .group-header { background: green; }
+
+
+
+
+
+
+#pdfOverlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.8);
+    z-index: 1000;
+}
+
+#pdfContainer {
+    position: absolute;
+    top: 5%; left: 15%;
+    width: 70%; height: 90%;
+    background: white;
+    box-shadow: 0 0 10px #000;
+}
+
+#closeButton {
+    position: absolute;
+    top: 10px; right: 15px;
+    font-size: 24px;
+    cursor: pointer;
+    color: red;
+}
+
+iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+ #footer {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        text-align: right;
+    }
