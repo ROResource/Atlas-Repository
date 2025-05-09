@@ -789,11 +789,11 @@ const defaultOptions = {
     kind: OptionKind.VIEWER + OptionKind.PREFERENCE
   },
   scrollModeOnLoad: {
-    value: -1,
+    value: 0,
     kind: OptionKind.VIEWER + OptionKind.PREFERENCE
   },
   spreadModeOnLoad: {
-    value: -1,
+    value: 0,
     kind: OptionKind.VIEWER + OptionKind.PREFERENCE
   },
   textLayerMode: {
@@ -11518,7 +11518,7 @@ function isValidAnnotationEditorMode(mode) {
 }
 class PDFPageViewBuffer {
   #buf = new Set();
-  #size = 0;
+  #size = 10;
   constructor(size) {
     this.#size = size;
   }
@@ -15206,14 +15206,7 @@ const PDFViewerApplication = {
     this.pdfViewer.currentScaleValue = DEFAULT_SCALE_VALUE;
   },
   touchPinchCallback(origin, prevDistance, distance) {
-    if (this.supportsPinchToZoom) {
-      const newScaleFactor = this._accumulateFactor(this.pdfViewer.currentScale, distance / prevDistance, "_touchUnusedFactor");
-      this.updateZoom(null, newScaleFactor, origin);
-    } else {
-      const PIXELS_PER_LINE_SCALE = 30;
-      const ticks = this._accumulateTicks((distance - prevDistance) / PIXELS_PER_LINE_SCALE, "_touchUnusedTicks");
-      this.updateZoom(ticks, null, origin);
-    }
+  // Do nothing to disable pinch-to-zoom
   },
   touchPinchEndCallback() {
     this._touchUnusedTicks = 0;
@@ -15951,9 +15944,9 @@ const PDFViewerApplication = {
     eventBus._on("lastpage", () => this.page = this.pagesCount, opts);
     eventBus._on("nextpage", () => pdfViewer.nextPage(), opts);
     eventBus._on("previouspage", () => pdfViewer.previousPage(), opts);
-    eventBus._on("zoomin", this.zoomIn.bind(this), opts);
-    eventBus._on("zoomout", this.zoomOut.bind(this), opts);
-    eventBus._on("zoomreset", this.zoomReset.bind(this), opts);
+   // eventBus._on("zoomin", this.zoomIn.bind(this), opts);//
+  //  eventBus._on("zoomout", this.zoomOut.bind(this), opts);//
+   // eventBus._on("zoomreset", this.zoomReset.bind(this), opts);//
     eventBus._on("pagenumberchanged", onPageNumberChanged.bind(this), opts);
     eventBus._on("scalechanged", evt => pdfViewer.currentScaleValue = evt.value, opts);
     eventBus._on("rotatecw", this.rotatePages.bind(this, 90), opts);
@@ -16385,9 +16378,7 @@ function onPageChanging({
 function onWheel(evt) {
   const {
     pdfViewer,
-    supportsMouseWheelZoomCtrlKey,
-    supportsMouseWheelZoomMetaKey,
-    supportsPinchToZoom
+
   } = this;
   if (pdfViewer.isInPresentationMode) {
     return;
@@ -16970,5 +16961,4 @@ if (document.readyState === "interactive" || document.readyState === "complete")
 }
 
 export { PDFViewerApplication, AppConstants as PDFViewerApplicationConstants, AppOptions as PDFViewerApplicationOptions };
-
 //# sourceMappingURL=viewer.mjs.map

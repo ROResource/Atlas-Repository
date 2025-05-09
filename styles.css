@@ -4,7 +4,6 @@
     padding: 0;
     box-sizing: border-box;
 }
-
 /* Body and html take full height */
 html, body {
     height: 100%;
@@ -33,6 +32,7 @@ html, body {
 
 /* Atlas container placeholder */
 #atlas-container {
+    
     min-height: auto;
     background: rgba(187, 228, 203, 0.517);
     border: 3px solid #000000;
@@ -170,27 +170,6 @@ html, body {
     .group:nth-of-type(9) .group-header { background: green; }
 
 
-
-
-
-
-#pdfOverlay {
-    display: none;
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: rgba(0,0,0,0.8);
-    z-index: 1000;
-}
-
-#pdfContainer {
-    position: absolute;
-    top: 5%; left: 15%;
-    width: 70%; height: 90%;
-    background: white;
-    box-shadow: 0 0 10px #000;
-}
-
 #closeButton {
     position: absolute;
     top: 10px; right: 15px;
@@ -199,14 +178,204 @@ html, body {
     color: red;
 }
 
-iframe {
+#footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    text-align: right;
+    display: block;
+    background: inherit;
+}
+/* Fullscreen black overlay */
+#pdfOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.85);
+    z-index: 1000;
+    display: none;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  /* A4 landscape (11.69 x 8.26 in ≈ 1.415:1) responsive container */
+  #pdfContainer {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -55%);
+
+    aspect-ratio: 1.415 / 1;
+    max-width: 90vw;
+    max-height: 90vh;
+    width: 65%;
+    height: auto;
+  
+    background: #111;
+    box-shadow: 0 0 15px #000;
+    overflow: hidden;
+    display:block;
+  }
+       
+  #pdfContainer iframe#pdfViewer {
+    display: block;
     width: 100%;
     height: 100%;
     border: none;
+    aspect-ratio: inherit;  /* matches #pdfContainer */
+    object-fit: contain;
+  }
+/* Scrollbar directly below container */
+#customScroller {
+    width: 65%;
+    max-width: 90vw;
+    height: 40px;
+    background-color: #f5f5f5;
+    border-top: 1px solid #ccc;
+    box-sizing: border-box;
+    user-select: none;
+    touch-action: none;
+    z-index: 1001;
+  }
+  
+  
+  
+  
+#scrollTrack {
+  width: 100%;
+  height: 10px;
+  background-color: #ccc;
+  border-radius: 5px;
+  position: relative;
+  margin: auto;
+  top: 13px;
 }
- #footer {
+
+#scrollThumb {
+  width: 30px;
+  height: 30px;
+  background-color: #007bff;
+  border-radius: 50%;
+  position: absolute;
+  top: -10px;
+  left: 0;
+  cursor: grab;
+  transition: background-color 0.2s;
+}
+
+#scrollThumb:active {
+  cursor: grabbing;
+  background-color: #0056b3;
+}  
+
+/* Container for the buttons */
+#pdfNavButtons {
+    position: fixed;
+    bottom: 15%;
+    left: 50%;
+    transform: translateX(-50%);
+    display: none; /* hidden by default */
+    gap: 40px;
+    z-index: 1000;
+  }
+  
+  /* Style for each button */
+  .navButton {
+    
+    color: white;
+    background: grey;
+    font-size: 200px;
+    border: 4px solid black;  /* ⬅ Thick black border */
+    border-radius: 12px;
+    cursor: pointer;
+    padding: 10 20px;
+    text-align: middle;
+    user-select: none;
+    transition: transform 0.01s;
+  }
+  
+  .navButton:active {
+    transform: scale(0.95);
+    background-color: rgba(255, 255, 255, 0.1); /* optional visual feedback */
+  }
+  
+  
+/* Portrait mode layout for nav buttons */
+@media (orientation: portrait) {
+    #pdfNavButtons {
         position: fixed;
-        bottom: 0;
-        width: 100%;
-        text-align: right;
+        bottom: 10vh;               /* Positions the whole nav area 10% from bottom of viewport */
+        height: 25vh;               /* Total height for the button row */
+        width: 90%;                /* Full width across the screen */
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        z-index: 1000;
+        pointer-events: none;
+              /* Let clicks pass through outside buttons */
+      }
+      
+      #pdfNavButtons .navButton {
+        width: 40vw;                /* 15% of viewport width */
+        height: 100%;               /* Fill full height of button row (25vh) */
+        aspect-ratio: 1 / 1;        /* Force square shape */
+        font-size: 20vh;            /* Glyph scales within button, slightly smaller than full size */
+        background: grey;
+        color: white;
+        border: 4px solid black;
+        border-radius: 12px;
+        padding: 0;
+        pointer-events: auto;       /* Make buttons clickable */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        user-select: none;
+        transition: transform 0.01s;
+      }
+  
+    #pdfNavButtons .navButton:active {
+      transform: scale(0.95);
+      background-color: rgba(255, 255, 255, 0.1);
     }
+  
+    #pdfContainer {
+      width: 95%;
+      top: 20%;
+      transform: translate(-50%, -40%);
+    }
+  
+    #customScroller {
+      width: 95%;
+    }
+  }
+  
+  @media (orientation: landscape) and (max-width: 768px) {
+    #pdfNavButtons {
+      position: fixed;
+      top: 50%;
+      left: 1.25%;
+      right: 1.25%;
+      transform: translateY(-50%);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0;
+      z-index: 1000;
+      pointer-events: none;
+    }
+  
+    #pdfNavButtons .navButton {
+      width: 15vw;              /* 15% of viewport width */
+      height: auto;
+      font-size: 60px;
+      pointer-events: auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  }

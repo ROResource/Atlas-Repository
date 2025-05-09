@@ -37,12 +37,36 @@ document.addEventListener('DOMContentLoaded', () => {
 
         function openPDF(file) {
     const viewer = document.getElementById('pdfViewer');
-    viewer.src = 'web/viewer.html?file=../pdf/' + file + '#page=1&zoom=page-fit';
-    document.getElementById('pdfOverlay').style.display = 'block';
+    viewer.src = 'web/viewer.html?file=../pdf/' + file + '#zoom=page-height';
+    document.getElementById('pdfOverlay').style.display = 'flex';
+    positionScrollerBelowContainer();
+    document.body.style.overflow = 'hidden';
+
 }
 
         function closePDF() {
             const viewer = document.getElementById('pdfViewer');
             viewer.src = '';
             document.getElementById('pdfOverlay').style.display = 'none';
+            document.body.style.overflow = '';
         }
+function positionScrollerBelowContainer() {
+  const container = document.getElementById('pdfContainer');
+  const scroller = document.getElementById('customScroller');
+  if (!container || !scroller) return;
+
+  const rect = container.getBoundingClientRect();
+  const scrollTop = window.scrollY || document.documentElement.scrollTop;
+
+  scroller.style.position = 'absolute';
+  scroller.style.top = `${rect.bottom + scrollTop}px`;
+  scroller.style.left = '50%';
+  scroller.style.transform = 'translateX(-50%)';
+}
+
+
+window.addEventListener('resize', positionScrollerBelowContainer);
+window.addEventListener('scroll', positionScrollerBelowContainer);
+
+
+     

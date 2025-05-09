@@ -1,0 +1,27 @@
+#toolbarContainer {
+  display: none !important;
+}
+#editorUndobar {
+  display: none !important;
+}
+#dialogContainer {
+  display: none !important;
+}
+#printContainer {
+  display: none !important;
+}
+#mainContainer {
+    background-color: black !important;
+}
+#sidebarContainer {
+    background-color: black !important;
+    display: none
+}
+#viewer .page {
+    background-color: black !important;
+}
+
+
+
+
+  

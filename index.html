@@ -7,6 +7,7 @@
     <title>Radiotherapy Contouring Atlases</title>
     <link rel="stylesheet" href="styles.css">
     <script src="script.js"></script>
+    
 
 </head>
 <body>
@@ -23,9 +24,20 @@
         <div id="guidelines-container"> </div>
     </div>
     <div id="pdfOverlay">
+        <span id="closeButton" onclick="closePDF()">✖</span>   
         <div id="pdfContainer">
-            <span id="closeButton" onclick="closePDF()">✖</span>
+            
             <iframe id="pdfViewer"></iframe>
+        </div>
+        <div id="customScroller">
+            <div id="scrollTrack">
+              <div id="scrollThumb"></div>
+              <script src="scrollbar.js"></script>
+            </div>
+        </div>
+        <div id="pdfNavButtons">
+            <button id="prevPage" class="navButton">&#x25C0;</button> <!-- ◀ -->
+            <button id="nextPage" class="navButton">&#x25B6;</button> <!-- ▶ -->
         </div>
     </div>
 </main>

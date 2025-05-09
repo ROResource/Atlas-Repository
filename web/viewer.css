@@ -3752,6 +3752,7 @@
 .dialog.newAltText{
   --preview-image-bg-color:light-dark(#f0f0f4, #2b2a33);
 }
+}
 
 @supports not (color: light-dark(tan, tan)){
 
@@ -5259,10 +5260,7 @@ body.wait::before{
   -webkit-mask-image:var(--toolbarButton-download-icon);
           mask-image:var(--toolbarButton-download-icon);
 }
-#toolbarPresentationMode > .toolbarButton.presentationMode::before {
-  -webkit-mask-image: var(--toolbarButton-presentationMode-icon);
-  mask-image: var(--toolbarButton-presentationMode-icon);
-}
+
 #currentOutlineItem::before{
   -webkit-mask-image:var(--toolbarButton-currentOutlineItem-icon);
           mask-image:var(--toolbarButton-currentOutlineItem-icon);
@@ -6395,74 +6393,4 @@ dialog :link{
   #scaleSelectContainer{
     display:none;
   }
-}
-#customToolbar {
-  display: flex;
-  justify-content: center;      /* center buttons horizontally */
-  gap: 10px;
-  padding: 8px;
-  background-color: black;      /* black background */
-  align-items: center;
-}
-
-#customToolbar .toolbarButton::before {
-  width: 16px;
-  height: 16px;
-  display: inline-block;
-  content: '';
-  -webkit-mask-size: 16px 16px;
-  mask-size: 16px 16px;
-  background-color: currentColor;   /* inherits current text/icon color */
-  margin-right: 4px;
-}
-
-#customToolbar .toolbarButton {
-  color: white;                  /* keep buttons and icons white */
-}
-#downloadButton::before {
-  -webkit-mask-image: var(--toolbarButton-download-icon);
-  mask-image: var(--toolbarButton-download-icon);
-}
-
-#presentationMode::before {
-  -webkit-mask-image: var(--toolbarButton-presentationMode-icon);
-  mask-image: var(--toolbarButton-presentationMode-icon);
-}
-
-#toolbarContainer {
-  display: none !important;
-}
-
-
-
-#mainContainer {
-    background-color: black !important;
-}
-#sidebarContainer {
-    background-color: black !important;
-}
-#viewer .page {
-    background-color: black !important;
-}
-
-#bottomToolbar {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  background-color: black;
-  display: flex;
-  justify-content: left;
-  padding: 8px;
-  z-index: 1000; /* ensures it sits above viewer content */
-}
-
-#bottomToolbar button {
-  background: none;
-  border: none;
-  padding: 6px 12px;
-  font-size: 14px;
-  color: white;
-  cursor: pointer;
-}
 }
