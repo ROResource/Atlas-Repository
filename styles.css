@@ -354,7 +354,7 @@ html, body {
     }
   }
   
-  @media (orientation: landscape) and (max-width: 768px) {
+  @media (orientation: landscape) and (max-width: 900px) {
     #pdfNavButtons {
       position: fixed;
       top: 50%;

@@ -2,7 +2,7 @@ import os
 from collections import defaultdict
 
 # Adjust folder path to your local machine
-folder_path = r'C:\Users\ronan\OneDrive\Desktop\Projects\Testing Lists\pdf'
+folder_path = r'C:\Users\ronan\OneDrive\Desktop\Projects\Atlas-Repository\pdf'
 output_file = 'atlas_list.html'
 
 groups = defaultdict(list)
