@@ -299,11 +299,6 @@ html, body {
     transition: transform 0.01s;
   }
   
-.navButton {
-  -webkit-user-select: none;  /* Safari */
-  user-select: none;          /* Modern browsers */
-  -webkit-touch-callout: none;/* Disable iOS context menu on long press */
-}
 
   .navButton:active {
     transform: scale(0.95);
