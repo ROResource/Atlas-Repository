@@ -71,4 +71,11 @@ window.addEventListener('resize', positionScrollerBelowContainer);
 window.addEventListener('scroll', positionScrollerBelowContainer);
 
 
-     
+ window.addEventListener('orientationchange', () => {
+  setTimeout(() => {
+    const container = document.getElementById('pdfContainer');
+    if (container) {
+      container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, 300); // Give browser time to resize layout
+});    
