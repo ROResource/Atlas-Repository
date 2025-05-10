@@ -379,3 +379,16 @@ html, body {
       align-items: center;
     }
   }
+
+  .pdf-active {
+  touch-action: manipulation;              /* disables double-tap zoom */
+  -webkit-user-select: none;               /* disables text selection on iOS */
+  -webkit-touch-callout: none;             /* disables long-press callout */
+  user-select: none;
+  }
+
+  .pdf-active .navButton {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  }  

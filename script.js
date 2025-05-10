@@ -40,6 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
     viewer.src = 'web/viewer.html?file=../pdf/' + file + '#zoom=page-height';
     document.getElementById('pdfOverlay').style.display = 'flex';
     positionScrollerBelowContainer();
+    document.body.classList.add('pdf-active');
     document.body.style.overflow = 'hidden';
 
 }
@@ -48,6 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const viewer = document.getElementById('pdfViewer');
             viewer.src = '';
             document.getElementById('pdfOverlay').style.display = 'none';
+            document.body.classList.remove('pdf-active');
             document.body.style.overflow = '';
         }
 function positionScrollerBelowContainer() {
