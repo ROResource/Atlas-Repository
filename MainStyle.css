@@ -177,7 +177,19 @@ html, body {
     cursor: pointer;
     color: red;
 }
-
+  #ShowLegend {
+    position: absolute;
+    top: 4px; left: 4px;
+    font-size: 2vh;
+    cursor: pointer;
+    color: rgb(255, 255, 255);
+    background: green;
+    margin: 0px;
+    padding: 5px;
+    border:white 3px solid;
+    z-index: 1000;
+    display: none;
+}
 #footer {
     position: fixed;
     bottom: 0;
@@ -201,6 +213,7 @@ html, body {
     padding: 0;
     flex-direction: column;
     align-items: center;
+
   }
   
   /* A4 landscape (11.69 x 8.26 in ≈ 1.415:1) responsive container */
@@ -300,7 +313,7 @@ html, body {
   }
   
 
-  .navButton:active {
+  .navButton.nav-pressed {
     transform: scale(0.95);
     background-color: rgba(255, 255, 255, 0.1); /* optional visual feedback */
   }
@@ -339,7 +352,7 @@ html, body {
         transition: transform 0.01s;
       }
   
-    #pdfNavButtons .navButton:active {
+    #pdfNavButtons .navButton.nav-pressed {
       transform: scale(0.95);
       background-color: rgba(255, 255, 255, 0.1);
     }
@@ -355,7 +368,7 @@ html, body {
     }
   }
   
-  @media (orientation: landscape) and (max-width: 900px) {
+  @media (orientation: landscape) {
     #pdfNavButtons {
       position: fixed;
       top: 50%;
@@ -372,8 +385,8 @@ html, body {
   
     #pdfNavButtons .navButton {
       width: 15vw;              /* 15% of viewport width */
-      height: auto;
-      font-size: 60px;
+      height: 100%;
+      font-size: 20vh;
       pointer-events: auto;
       display: flex;
       justify-content: center;

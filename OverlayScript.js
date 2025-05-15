@@ -157,10 +157,12 @@
         pageCount = app.pdfViewer.pagesCount;
         currentPage = app.page;
         updateThumbPosition(currentPage);
-
+        
+          setupShowLegendPreview();
         app.eventBus.on('pagechanging', (e) => {
           currentPage = e.pageNumber;
           updateThumbPosition(e.pageNumber);
+
         });
 
         setupDragEvents();
@@ -189,4 +191,70 @@
   if (iframe?.contentWindow?.PDFViewerApplication) {
     waitForPDFViewer();
   }
+
+function setupShowLegendPreview() {
+  const legendBtn = document.getElementById('ShowLegend');
+  if (!legendBtn) return;
+
+  // Remove any existing listeners first
+  legendBtn.replaceWith(legendBtn.cloneNode(true));
+  const freshLegendBtn = document.getElementById('ShowLegend');
+
+  let previousPage = null;
+
+  function getPDFApp() {
+    const iframe = document.getElementById('pdfViewer');
+    return iframe?.contentWindow?.PDFViewerApplication;
+  }
+
+  function jumpToLegend() {
+    const app = getPDFApp();
+    if (!app || !app.pdfViewer) return;
+    previousPage = app.pdfViewer.currentPageNumber;
+    app.pdfViewer.currentPageNumber = 3;
+  }
+
+  function returnToPreviousPage() {
+    const app = getPDFApp();
+    if (!app || previousPage === null) return;
+    app.pdfViewer.currentPageNumber = previousPage;
+    previousPage = null;
+  }
+
+  freshLegendBtn.addEventListener('mousedown', jumpToLegend);
+  freshLegendBtn.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    jumpToLegend();
+  }, { passive: false });
+
+  freshLegendBtn.addEventListener('mouseup', returnToPreviousPage);
+  freshLegendBtn.addEventListener('mouseleave', returnToPreviousPage);
+  freshLegendBtn.addEventListener('touchend', returnToPreviousPage);
+
+  // Attach page visibility logic again
+  const app = getPDFApp();
+  if (app?.eventBus) {
+    app.eventBus.on('pagechanging', (e) => {
+      const pageNum = e.pageNumber;
+      freshLegendBtn.style.display = (pageNum >= 1 && pageNum <= 2) ? 'none' : 'inline';
+      freshLegendBtn.style.opacity = (pageNum === 3) ? '0' : '1';
+    });
+  }
+}
 })();
+
+document.addEventListener('DOMContentLoaded', () => {
+  const buttons = document.querySelectorAll('.navButton');
+
+  buttons.forEach(btn => {
+    // Touch feedback
+    btn.addEventListener('touchstart', () => btn.classList.add('nav-pressed'), { passive: true });
+    btn.addEventListener('touchend', () => btn.classList.remove('nav-pressed'));
+    btn.addEventListener('touchcancel', () => btn.classList.remove('nav-pressed'));
+
+    // Mouse feedback
+    btn.addEventListener('mousedown', () => btn.classList.add('nav-pressed'));
+    btn.addEventListener('mouseup', () => btn.classList.remove('nav-pressed'));
+    btn.addEventListener('mouseleave', () => btn.classList.remove('nav-pressed'));
+  });
+});

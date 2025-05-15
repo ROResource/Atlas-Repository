@@ -6,8 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <meta name="description" content="A collection of radiotherapy contouring atlases for clinical and educational use.">
     <title>Radiotherapy Contouring Atlases</title>
-    <link rel="stylesheet" href="styles.css">
-    <script src="script.js"></script>
+    <link rel="stylesheet" href="MainStyle.css">
+    <script src="MainScript.js"></script>
     
 
 </head>
@@ -25,15 +25,16 @@
         <div id="guidelines-container"> </div>
     </div>
     <div id="pdfOverlay">
-        <span id="closeButton" onclick="closePDF()">✖</span>   
+        <span id="closeButton" onclick="closePDF()">✖</span>
+   
         <div id="pdfContainer">
-            
+            <span id="ShowLegend">Show Legend</span>  
             <iframe id="pdfViewer"></iframe>
         </div>
         <div id="customScroller">
             <div id="scrollTrack">
               <div id="scrollThumb"></div>
-              <script src="scrollbar.js"></script>
+              <script src="OverlayScript.js"></script>
             </div>
         </div>
         <div id="pdfNavButtons">

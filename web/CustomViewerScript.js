@@ -30,6 +30,7 @@ window.addEventListener('resize', () => {
         app.pdfViewer.nextPage();
       } else if (direction === 'up' && current > 1) {
         app.pdfViewer.previousPage();
+        
       }
   
       setTimeout(() => {
@@ -112,8 +113,9 @@ window.addEventListener('resize', () => {
 document.addEventListener('webviewerloaded', () => {
     PDFViewerApplication.initializedPromise.then(() => {
       PDFViewerApplication.eventBus.on('pagechange', () => {
-        cleanupOffscreenPages(3); // keep current ±3 pages only
-      });
+        cleanupOffscreenPages(3);
+        updateLegendVisibility; // keep current ±3 pages only
+      })  
     });
   }); 
 
@@ -130,3 +132,9 @@ function positionScrollerBelowContainer() {
   scroller.style.left = '50%';
   scroller.style.transform = 'translateX(-50%)';
 }
+document.addEventListener('DOMContentLoaded', () => {
+  const container = document.getElementById('viewerContainer');
+  container.addEventListener('contextmenu', (e) => {
+    e.preventDefault(); // disable long-press menu inside viewer
+  });
+});

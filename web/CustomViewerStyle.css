@@ -11,7 +11,7 @@
     justify-content: center; /* Center viewer horizontally */
     box-sizing: border-box !important;
     background: transparent !important;
-
+    
   }
   
   #viewer {
@@ -56,4 +56,8 @@
       background-color: black !important;
   }
 
-  
+#viewerContainer,
+#viewerContainer * {
+  user-select: none;
+  -webkit-user-select: none;
+}

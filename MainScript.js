@@ -51,6 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('pdfOverlay').style.display = 'none';
             document.body.classList.remove('pdf-active');
             document.body.style.overflow = '';
+            document.getElementById('ShowLegend').style.display = 'none';
         }
 function positionScrollerBelowContainer() {
   const container = document.getElementById('pdfContainer');
@@ -79,3 +80,12 @@ window.addEventListener('scroll', positionScrollerBelowContainer);
     }
   }, 300); // Give browser time to resize layout
 });    
+
+document.addEventListener('contextmenu', (e) => {
+  if (document.body.classList.contains('pdf-active')) {
+    e.preventDefault(); // Block context menu on long-press
+  }
+});
+
+
+
