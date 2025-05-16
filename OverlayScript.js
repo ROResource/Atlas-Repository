@@ -1,3 +1,4 @@
+//Scrollbar and Nav Buttons
 (function () {
   const track = document.getElementById('scrollTrack');
   const thumb = document.getElementById('scrollThumb');
@@ -48,11 +49,19 @@
     dragInterval = null;
   }
 
-  function startHold(direction) {
-    const app = getPDFApp();
-    if (!app || !app.pdfViewer) return;
 
+  let holdDirection = null;
+
+function startHold(direction) {
+  // Prevent switching direction while one is active
+  if (holdInterval !== null && holdDirection !== direction) return;
+
+  const app = getPDFApp();
+  if (!app || !app.pdfViewer) return;
+
+  if (holdInterval === null) {
     goToPage(app.page + direction);
+    holdDirection = direction;
 
     holdInterval = setInterval(() => {
       const currentApp = getPDFApp();
@@ -64,12 +73,13 @@
       if (newPage >= 1 && newPage <= currentApp.pdfViewer.pagesCount) {
         goToPage(newPage);
       }
-    }, 100);
+    }, 75);
   }
-
+}
   function stopHold() {
     clearInterval(holdInterval);
     holdInterval = null;
+    holdDirection = null;
   }
 
   function setupNavButtonEvents() {
@@ -191,7 +201,7 @@
   if (iframe?.contentWindow?.PDFViewerApplication) {
     waitForPDFViewer();
   }
-
+  // Legend Button Logic 
 function setupShowLegendPreview() {
   const legendBtn = document.getElementById('ShowLegend');
   if (!legendBtn) return;
