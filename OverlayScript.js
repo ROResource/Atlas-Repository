@@ -25,6 +25,7 @@
     const app = getPDFApp();
     if (app && page !== app.page) {
       app.page = page;
+      currentPage = page;
     }
   }
 
