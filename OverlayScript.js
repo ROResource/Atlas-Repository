@@ -21,12 +21,17 @@
     thumb.style.left = `${left}px`;
   }
 
-  function goToPage(page) {
-    const app = getPDFApp();
-    if (app && page !== app.page) {
-      app.page = page;
-    }
-  }
+function goToPage(n) {
+  const app = getPDFApp();
+  if (!app || !app.pdfViewer || !app.pdfViewer.getPageView) return;
+
+  const pageView = app.pdfViewer.getPageView(n - 1);
+  if (!pageView?.div) return;
+
+  // Skip PDF.js's scrollIntoView
+  const container = app.pdfViewer.container;
+  container.scrollTop = pageView.div.offsetTop;
+}
 
   function getThumbLeftFromEvent(e) {
     const clientX = e.touches ? e.touches[0].clientX : e.clientX;
@@ -262,3 +267,4 @@ document.addEventListener('DOMContentLoaded', () => {
     btn.addEventListener('mouseleave', () => btn.classList.remove('nav-pressed'));
   });
 });
+

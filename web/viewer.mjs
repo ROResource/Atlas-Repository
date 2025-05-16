@@ -7534,7 +7534,7 @@ class PDFViewer {
         [hPadding, vPadding] = [vPadding, hPadding];
       }
       const pageWidthScale = (this.container.clientWidth - hPadding) / currentPage.width * currentPage.scale / this.#pageWidthScaleFactor;
-      const pageHeightScale = (this.container.clientHeight) / (currentPage.height-5) * currentPage.scale;
+      const pageHeightScale = (this.container.clientHeight) / (currentPage.height) * currentPage.scale;
       switch (value) {
         case "page-actual":
           scale = 1;
