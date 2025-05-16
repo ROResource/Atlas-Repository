@@ -177,18 +177,22 @@ html, body {
     cursor: pointer;
     color: red;
 }
-  #ShowLegend {
+#ShowLegend {
     position: absolute;
-    top: 4px; left: 4px;
-    font-size: 2vh;
+    align-content: center;
+    top: 5px; left: 5px;
     cursor: pointer;
     color: rgb(255, 255, 255);
     background: green;
     margin: 0px;
-    padding: 5px;
-    border:white 3px solid;
+    padding: 2px;
+    border:white 2px solid;
     z-index: 1000;
     display: none;
+    font-size: Auto;       /* Size of the text (use px, em, rem, etc.) */
+    font-weight: bold;      /* Makes text bold */ /* Makes all text uppercase */
+    letter-spacing: 1px;   /* Spacing between letters *//* Controls vertical spacing if multi-line */
+    /* Redundant with flex centering, but safe */
 }
 #footer {
     position: fixed;
@@ -225,7 +229,7 @@ html, body {
 
     aspect-ratio: 1.415 / 1;
     max-width: 90vw;
-    max-height: 90vh;
+    max-height: 85vh;
     width: 65%;
     height: auto;
   
@@ -359,7 +363,7 @@ html, body {
   
     #pdfContainer {
       width: 95%;
-      top: 20%;
+      top: 25%;
       transform: translate(-50%, -40%);
     }
   
