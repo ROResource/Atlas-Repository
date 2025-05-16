@@ -81,36 +81,31 @@ function stopHold() {
 }
 
 
-  function setupNavButtonEvents() {
-    const prevBtn = document.getElementById('prevPage');
-    const nextBtn = document.getElementById('nextPage');
+function setupNavButtonEvents() {
+  const prevBtn = document.getElementById('prevPage');
+  const nextBtn = document.getElementById('nextPage');
 
-    if (!prevBtn || !nextBtn) return;
+  if (!prevBtn || !nextBtn) return;
 
-    prevBtn.removeEventListener('mousedown', startHoldPrev);
-    prevBtn.removeEventListener('touchstart', startHoldPrev);
-    prevBtn.removeEventListener('mouseup', stopHold);
-    prevBtn.removeEventListener('mouseleave', stopHold);
-    prevBtn.removeEventListener('touchend', stopHold);
+  // Clean existing listeners
+  ['pointerdown', 'pointerup', 'pointercancel', 'pointerleave'].forEach(event => {
+    prevBtn.removeEventListener(event, startHoldPrev);
+    prevBtn.removeEventListener(event, stopHold);
+    nextBtn.removeEventListener(event, startHoldNext);
+    nextBtn.removeEventListener(event, stopHold);
+  });
 
-    nextBtn.removeEventListener('mousedown', startHoldNext);
-    nextBtn.removeEventListener('touchstart', startHoldNext);
-    nextBtn.removeEventListener('mouseup', stopHold);
-    nextBtn.removeEventListener('mouseleave', stopHold);
-    nextBtn.removeEventListener('touchend', stopHold);
+  // Add unified pointer events
+  prevBtn.addEventListener('pointerdown', startHoldPrev);
+  prevBtn.addEventListener('pointerup', stopHold);
+  prevBtn.addEventListener('pointercancel', stopHold);
+  prevBtn.addEventListener('pointerleave', stopHold);
 
-    prevBtn.addEventListener('mousedown', startHoldPrev);
-    prevBtn.addEventListener('touchstart', startHoldPrev, { passive: false });
-    prevBtn.addEventListener('mouseup', stopHold);
-    prevBtn.addEventListener('mouseleave', stopHold);
-    prevBtn.addEventListener('touchend', stopHold);
-
-    nextBtn.addEventListener('mousedown', startHoldNext);
-    nextBtn.addEventListener('touchstart', startHoldNext, { passive: false });
-    nextBtn.addEventListener('mouseup', stopHold);
-    nextBtn.addEventListener('mouseleave', stopHold);
-    nextBtn.addEventListener('touchend', stopHold);
-  }
+  nextBtn.addEventListener('pointerdown', startHoldNext);
+  nextBtn.addEventListener('pointerup', stopHold);
+  nextBtn.addEventListener('pointercancel', stopHold);
+  nextBtn.addEventListener('pointerleave', stopHold);
+}
 
   function startHoldPrev() {
     startHold(-1);
