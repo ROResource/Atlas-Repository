@@ -229,6 +229,7 @@ html, body {
 
     aspect-ratio: 1.415 / 1;
     max-width: 90vw;
+    max-height: 90dvh;
     max-height: 85vh;
     width: 65%;
     height: auto;
