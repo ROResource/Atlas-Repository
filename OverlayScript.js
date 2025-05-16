@@ -80,7 +80,7 @@ function stopHold() {
   clearInterval(holdInterval);
   holdInterval = null;
   holdDirection = null;
-  currentPage = null;
+  currentPage = page;
 }
 
 
