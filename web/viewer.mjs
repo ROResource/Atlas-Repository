@@ -2,39 +2,26 @@
 ;// ./web/pdfjs.js
 const {
   AbortException,
-  AnnotationEditorLayer,
-  AnnotationEditorParamsType,
   AnnotationEditorType,
   AnnotationEditorUIManager,
   AnnotationLayer,
   AnnotationMode,
   AnnotationType,
   build,
-  ColorPicker,
   createValidAbsoluteUrl,
-  DOMSVGFactory,
-  DrawLayer,
   FeatureTest,
   fetchData,
   getDocument,
   getFilenameFromUrl,
   getPdfFilenameFromUrl: pdfjs_getPdfFilenameFromUrl,
-  getUuid,
-  getXfaPageViewport,
   GlobalWorkerOptions,
-  ImageKind,
   InvalidPDFException,
   isDataScheme,
   isPdfFile,
   isValidExplicitDest,
   MathClamp,
-  noContextMenu,
   normalizeUnicode,
-  OPS,
   OutputScale,
-  PasswordResponses,
-  PDFDataRangeTransport,
-  PDFDateString,
   PDFWorker,
   PermissionFlag,
   PixelsPerInch,
@@ -42,17 +29,12 @@ const {
   ResponseException,
   setLayerDimensions,
   shadow,
-  SignatureExtractor,
   stopEvent,
-  SupportedImageMimeTypes,
   TextLayer,
   TouchManager,
   updateUrlHash,
   Util,
-  VerbosityLevel,
-  version,
-  XfaLayer
-} = globalThis.pdfjsLib;
+  version} = globalThis.pdfjsLib;
 
 ;// ./web/ui_utils.js
 
@@ -137,7 +119,7 @@ function scrollIntoView(element, spot, scrollMatches = false) {
   parent.scrollTop = offsetY;
 }
 function watchScroll(viewAreaElement, callback, abortSignal = undefined) {
-  const debounceScroll = function (evt) {
+  const debounceScroll = function () {
     if (rAF) {
       return;
     }
@@ -253,20 +235,6 @@ function approximateFraction(x) {
 function floorToDivide(x, div) {
   return x - x % div;
 }
-function getPageSizeInches({
-  view,
-  userUnit,
-  rotate
-}) {
-  const [x1, y1, x2, y2] = view;
-  const changeOrientation = rotate % 180 !== 0;
-  const width = (x2 - x1) / 72 * userUnit;
-  const height = (y2 - y1) / 72 * userUnit;
-  return {
-    width: changeOrientation ? height : width,
-    height: changeOrientation ? width : height
-  };
-}
 function backtrackBeforeAllVisibleElements(index, views, top) {
   if (index < 2) {
     return index;
@@ -381,18 +349,6 @@ function normalizeWheelEventDirection(evt) {
   const angle = Math.atan2(evt.deltaY, evt.deltaX);
   if (-0.25 * Math.PI < angle && angle < 0.75 * Math.PI) {
     delta = -delta;
-  }
-  return delta;
-}
-function normalizeWheelEventDelta(evt) {
-  const deltaMode = evt.deltaMode;
-  let delta = normalizeWheelEventDirection(evt);
-  const MOUSE_PIXELS_PER_LINE = 30;
-  const MOUSE_LINES_PER_PAGE = 30;
-  if (deltaMode === WheelEvent.DOM_DELTA_PIXEL) {
-    delta /= MOUSE_PIXELS_PER_LINE * MOUSE_LINES_PER_PAGE;
-  } else if (deltaMode === WheelEvent.DOM_DELTA_LINE) {
-    delta /= MOUSE_LINES_PER_PAGE;
   }
   return delta;
 }
@@ -1261,31 +1217,6 @@ const WaitOnType = {
   EVENT: "event",
   TIMEOUT: "timeout"
 };
-async function waitOnEventOrTimeout({
-  target,
-  name,
-  delay = 0
-}) {
-  if (typeof target !== "object" || !(name && typeof name === "string") || !(Number.isInteger(delay) && delay >= 0)) {
-    throw new Error("waitOnEventOrTimeout - invalid parameters.");
-  }
-  const {
-    promise,
-    resolve
-  } = Promise.withResolvers();
-  const ac = new AbortController();
-  function handler(type) {
-    ac.abort();
-    clearTimeout(timeout);
-    resolve(type);
-  }
-  const evtMethod = target instanceof EventBus ? "_on" : "addEventListener";
-  target[evtMethod](name, handler.bind(null, WaitOnType.EVENT), {
-    signal: ac.signal
-  });
-  const timeout = setTimeout(handler.bind(null, WaitOnType.TIMEOUT), delay);
-  return promise;
-}
 class EventBus {
   #listeners = Object.create(null);
   on(eventName, listener, options = null) {
@@ -1362,27 +1293,13 @@ class EventBus {
     }
   }
 }
-class FirefoxEventBus extends EventBus {
-  #externalServices;
-  #globalEventNames;
-  #isInAutomation;
-  constructor(globalEventNames, externalServices, isInAutomation) {
-    super();
-    this.#globalEventNames = globalEventNames;
-    this.#externalServices = externalServices;
-    this.#isInAutomation = isInAutomation;
-  }
-  dispatch(eventName, data) {
-    throw new Error("Not implemented: FirefoxEventBus.dispatch");
-  }
-}
 
 ;// ./web/external_services.js
 class BaseExternalServices {
-  updateFindControlState(data) {}
-  updateFindMatchesCount(data) {}
+  updateFindControlState() {}
+  updateFindMatchesCount() {}
   initPassiveLoading() {}
-  reportTelemetry(data) {}
+  reportTelemetry() {}
   async createL10n() {
     throw new Error("Not implemented: createL10n");
   }
@@ -1392,7 +1309,7 @@ class BaseExternalServices {
   createSignatureStorage() {
     throw new Error("Not implemented: createSignatureStorage");
   }
-  updateEditorStates(data) {
+  updateEditorStates() {
     throw new Error("Not implemented: updateEditorStates");
   }
   dispatchGlobalEvent(_event) {}
@@ -2494,39 +2411,6 @@ class CachedIterable extends Array {
 }
 ;// ./node_modules/cached-iterable/src/cached_sync_iterable.mjs
 
-class CachedSyncIterable extends CachedIterable {
-  constructor(iterable) {
-    super();
-    if (Symbol.iterator in Object(iterable)) {
-      this.iterator = iterable[Symbol.iterator]();
-    } else {
-      throw new TypeError("Argument must implement the iteration protocol.");
-    }
-  }
-  [Symbol.iterator]() {
-    const cached = this;
-    let cur = 0;
-    return {
-      next() {
-        if (cached.length <= cur) {
-          cached.push(cached.iterator.next());
-        }
-        return cached[cur++];
-      }
-    };
-  }
-  touchNext(count = 1) {
-    let idx = 0;
-    while (idx++ < count) {
-      const last = this[this.length - 1];
-      if (last && last.done) {
-        break;
-      }
-      this.push(this.iterator.next());
-    }
-    return this[this.length - 1];
-  }
-}
 ;// ./node_modules/cached-iterable/src/cached_async_iterable.mjs
 
 class CachedAsyncIterable extends CachedIterable {
@@ -2940,7 +2824,6 @@ class L10n {
     return ["ar", "he", "fa", "ps", "ur"].includes(shortCode);
   }
 }
-const GenericL10n = null;
 
 ;// ./web/genericl10n.js
 
@@ -3073,19 +2956,6 @@ class ExternalServices extends BaseExternalServices {
   createSignatureStorage(eventBus, signal) {
     return new SignatureStorage(eventBus, signal);
   }
-}
-class MLManager {
-  async isEnabledFor(_name) {
-    return false;
-  }
-  async deleteModel(_service) {
-    return null;
-  }
-  isReady(_name) {
-    return false;
-  }
-  guess(_data) {}
-  toggleService(_name, _enabled) {}
 }
 
 ;// ./web/new_alt_text_manager.js
@@ -3222,97 +3092,6 @@ class OverlayManager {
 
 const TREEITEM_OFFSET_TOP = -100;
 const TREEITEM_SELECTED_CLASS = "selected";
-class BaseTreeViewer {
-  constructor(options) {
-    this.container = options.container;
-    this.eventBus = options.eventBus;
-    this._l10n = options.l10n;
-    this.reset();
-  }
-  reset() {
-    this._pdfDocument = null;
-    this._lastToggleIsShow = true;
-    this._currentTreeItem = null;
-    this.container.textContent = "";
-    this.container.classList.remove("treeWithDeepNesting");
-  }
-  _dispatchEvent(count) {
-    throw new Error("Not implemented: _dispatchEvent");
-  }
-  _bindLink(element, params) {
-    throw new Error("Not implemented: _bindLink");
-  }
-  _normalizeTextContent(str) {
-    return removeNullCharacters(str, true) || "\u2013";
-  }
-  _addToggleButton(div, hidden = false) {
-    const toggler = document.createElement("div");
-    toggler.className = "treeItemToggler";
-    if (hidden) {
-      toggler.classList.add("treeItemsHidden");
-    }
-    toggler.onclick = evt => {
-      evt.stopPropagation();
-      toggler.classList.toggle("treeItemsHidden");
-      if (evt.shiftKey) {
-        const shouldShowAll = !toggler.classList.contains("treeItemsHidden");
-        this._toggleTreeItem(div, shouldShowAll);
-      }
-    };
-    div.prepend(toggler);
-  }
-  _toggleTreeItem(root, show = false) {
-    this._l10n.pause();
-    this._lastToggleIsShow = show;
-    for (const toggler of root.querySelectorAll(".treeItemToggler")) {
-      toggler.classList.toggle("treeItemsHidden", !show);
-    }
-    this._l10n.resume();
-  }
-  _toggleAllTreeItems() {
-    this._toggleTreeItem(this.container, !this._lastToggleIsShow);
-  }
-  _finishRendering(fragment, count, hasAnyNesting = false) {
-    if (hasAnyNesting) {
-      this.container.classList.add("treeWithDeepNesting");
-      this._lastToggleIsShow = !fragment.querySelector(".treeItemsHidden");
-    }
-    this._l10n.pause();
-    this.container.append(fragment);
-    this._l10n.resume();
-    this._dispatchEvent(count);
-  }
-  render(params) {
-    throw new Error("Not implemented: render");
-  }
-  _updateCurrentTreeItem(treeItem = null) {
-    if (this._currentTreeItem) {
-      this._currentTreeItem.classList.remove(TREEITEM_SELECTED_CLASS);
-      this._currentTreeItem = null;
-    }
-    if (treeItem) {
-      treeItem.classList.add(TREEITEM_SELECTED_CLASS);
-      this._currentTreeItem = treeItem;
-    }
-  }
-  _scrollToCurrentTreeItem(treeItem) {
-    if (!treeItem) {
-      return;
-    }
-    this._l10n.pause();
-    let currentNode = treeItem.parentNode;
-    while (currentNode && currentNode !== this.container) {
-      if (currentNode.classList.contains("treeItem")) {
-        const toggler = currentNode.firstElementChild;
-        toggler?.classList.remove("treeItemsHidden");
-      }
-      currentNode = currentNode.parentNode;
-    }
-    this._l10n.resume();
-    this._updateCurrentTreeItem(treeItem);
-    this.container.scrollTo(treeItem.offsetLeft, treeItem.offsetTop + TREEITEM_OFFSET_TOP);
-  }
-}
 
 ;// ./web/pdf_attachment_viewer.js
 ;// ./web/grab_to_pan.js
@@ -4012,7 +3791,7 @@ class PDFFindController {
       this.#updatePage(this._selected.pageIdx);
     }
   }
-  #onFindBarClose(evt) {
+  #onFindBarClose() {
     const pdfDocument = this._pdfDocument;
     this._firstPageCapability.promise.then(() => {
       if (!this._pdfDocument || pdfDocument && this._pdfDocument !== pdfDocument) {
@@ -4941,31 +4720,7 @@ class AnnotationLayerBuilder {
   hasEditableAnnotations() {
     return !!this.annotationLayer?.hasEditableAnnotations();
   }
-  async injectLinkAnnotations({
-    inferredLinks,
-    viewport,
-    structTreeLayer = null
-  }) {
-    if (this.#annotations === null) {
-      throw new Error("`render` method must be called before `injectLinkAnnotations`.");
-    }
-    if (this._cancelled || this.#linksInjected) {
-      return;
-    }
-    this.#linksInjected = true;
-    const newLinks = this.#annotations.length ? this.#checkInferredLinks(inferredLinks) : inferredLinks;
-    if (!newLinks.length) {
-      return;
-    }
-    if (!this.annotationLayer) {
-      this.#initAnnotationLayer(viewport, structTreeLayer);
-      setLayerDimensions(this.div, viewport);
-    }
-    await this.annotationLayer.addLinkAnnotations(newLinks, this.linkService);
-    if (!this.#externalHide) {
-      this.div.hidden = false;
-    }
-  }
+
   #updatePresentationModeState(state) {
     if (!this.div) {
       return;
@@ -6478,97 +6233,11 @@ class PDFPageView extends BasePDFPageView {
       this.#dispatchLayerRendered("annotationeditorlayerrendered", error);
     }
   }
-  async #renderDrawLayer() {
-    try {
-      await this.drawLayer.render({
-        intent: "display"
-      });
-    } catch (ex) {
-      console.error("#renderDrawLayer:", ex);
-    }
-  }
-  async #renderXfaLayer() {
-    let error = null;
-    try {
-      const result = await this.xfaLayer.render({
-        viewport: this.viewport,
-        intent: "display"
-      });
-      if (result?.textDivs && this._textHighlighter) {
-        this.#buildXfaTextContentItems(result.textDivs);
-      }
-    } catch (ex) {
-      console.error("#renderXfaLayer:", ex);
-      error = ex;
-    } finally {
-      if (this.xfaLayer?.div) {
-        this.l10n.pause();
-        this.#addLayer(this.xfaLayer.div, "xfaLayer");
-        this.l10n.resume();
-      }
-      this.#dispatchLayerRendered("xfalayerrendered", error);
-    }
-  }
-  async #renderTextLayer() {
-    if (!this.textLayer) {
-      return;
-    }
-    let error = null;
-    try {
-      await this.textLayer.render({
-        viewport: this.viewport
-      });
-    } catch (ex) {
-      if (ex instanceof AbortException) {
-        return;
-      }
-      console.error("#renderTextLayer:", ex);
-      error = ex;
-    }
-    this.#dispatchLayerRendered("textlayerrendered", error);
-    this.#renderStructTreeLayer();
-  }
-  async #renderStructTreeLayer() {
-    if (!this.textLayer) {
-      return;
-    }
-    const treeDom = await this.structTreeLayer?.render();
-    if (treeDom) {
-      this.l10n.pause();
-      this.structTreeLayer?.addElementsToTextLayer();
-      if (this.canvas && treeDom.parentNode !== this.canvas) {
-        this.canvas.append(treeDom);
-      }
-      this.l10n.resume();
-    }
-    this.structTreeLayer?.show();
-  }
-  async #buildXfaTextContentItems(textDivs) {
-    const text = await this.pdfPage.getTextContent();
-    const items = [];
-    for (const item of text.items) {
-      items.push(item.str);
-    }
-    this._textHighlighter.setTextMapping(textDivs, items);
-    this._textHighlighter.enable();
-  }
-  async #injectLinkAnnotations(textLayerPromise) {
-    let error = null;
-    try {
-      await textLayerPromise;
-      if (!this.annotationLayer) {
-        return;
-      }
-      await this.annotationLayer.injectLinkAnnotations({
-        inferredLinks: Autolinker.processLinks(this),
-        viewport: this.viewport,
-        structTreeLayer: this.structTreeLayer
-      });
-    } catch (ex) {
-      console.error("#injectLinkAnnotations:", ex);
-      error = ex;
-    }
-  }
+
+
+
+
+
   _resetCanvas() {
     super._resetCanvas();
     this.#originalViewport = null;
@@ -6822,23 +6491,6 @@ class PDFPageView extends BasePDFPageView {
     if (redrawAnnotationLayer && this.annotationLayer) {
       this.#renderAnnotationLayer();
     }
-    if (redrawAnnotationEditorLayer && this.annotationEditorLayer) {
-      if (this.drawLayer) {
-        this.#renderDrawLayer();
-      }
-      this.#renderAnnotationEditorLayer();
-    }
-    if (redrawXfaLayer && this.xfaLayer) {
-      this.#renderXfaLayer();
-    }
-    if (this.textLayer) {
-      if (hideTextLayer) {
-        this.textLayer.hide();
-        this.structTreeLayer?.hide();
-      } else if (redrawTextLayer) {
-        this.#renderTextLayer();
-      }
-    }
   }
   get width() {
     return this.viewport.width;
@@ -6975,53 +6627,11 @@ class PDFPageView extends BasePDFPageView {
       this.dispatchPageRendered(false, false);
     }).then(async () => {
       this.structTreeLayer ||= new StructTreeLayerBuilder(pdfPage, viewport.rawDims);
-      const textLayerPromise = this.#renderTextLayer();
+
       if (this.annotationLayer) {
         await this.#renderAnnotationLayer();
-        if (this.#enableAutoLinking && this.annotationLayer && this.textLayer) {
-          await this.#injectLinkAnnotations(textLayerPromise);
-        }
       }
-      const {
-        annotationEditorUIManager
-      } = this.#layerProperties;
-      if (!annotationEditorUIManager) {
-        return;
-      }
-      this.drawLayer ||= new DrawLayerBuilder({
-        pageIndex: this.id
-      });
-      await this.#renderDrawLayer();
-      this.drawLayer.setParent(canvasWrapper);
-      this.annotationEditorLayer ||= new AnnotationEditorLayerBuilder({
-        uiManager: annotationEditorUIManager,
-        pdfPage,
-        l10n,
-        structTreeLayer: this.structTreeLayer,
-        accessibilityManager: this._accessibilityManager,
-        annotationLayer: this.annotationLayer?.annotationLayer,
-        textLayer: this.textLayer,
-        drawLayer: this.drawLayer.getDrawLayer(),
-        onAppend: annotationEditorLayerDiv => {
-          this.#addLayer(annotationEditorLayerDiv, "annotationEditorLayer");
-        }
-      });
-      this.#renderAnnotationEditorLayer();
     });
-    if (pdfPage.isPureXfa) {
-      if (!this.xfaLayer) {
-        const {
-          annotationStorage,
-          linkService
-        } = this.#layerProperties;
-        this.xfaLayer = new XfaLayerBuilder({
-          pdfPage,
-          annotationStorage,
-          linkService
-        });
-      }
-      this.#renderXfaLayer();
-    }
     div.setAttribute("data-loaded", true);
     this.dispatchPageRender();
     return resultPromise;
@@ -9552,10 +9162,10 @@ const PDFViewerApplication = {
       scrollMode: ScrollMode.UNKNOWN,
       spreadMode: SpreadMode.UNKNOWN
     }).catch(() => {});
-    firstPagePromise.then(pdfPage => {
+    firstPagePromise.then(() => {
       this.loadingBar?.setWidth(this.appConfig.viewerContainer);
       this._initializeAnnotationStorageCallbacks(pdfDocument);
-      Promise.all([animationStarted, storedPromise, pageLayoutPromise, pageModePromise, openActionPromise]).then(async ([timeStamp, stored, pageLayout, pageMode, openAction]) => {
+      Promise.all([animationStarted, storedPromise, pageLayoutPromise, pageModePromise, openActionPromise]).then(async ([, stored, pageLayout, pageMode, openAction]) => {
         const viewOnLoad = AppOptions.get("viewOnLoad");
         this._initializePdfHistory({
           fingerprint: pdfDocument.fingerprints[0],
@@ -9970,11 +9580,8 @@ const PDFViewerApplication = {
     };
     const {
       eventBus,
-      externalServices,
       pdfDocumentProperties,
-      pdfViewer,
-      preferences
-    } = this;
+      pdfViewer    } = this;
     eventBus._on("resize", onResize.bind(this), opts);
     eventBus._on("hashchange", onHashchange.bind(this), opts);
     eventBus._on("beforeprint", this.beforePrint.bind(this), opts);
@@ -10215,7 +9822,7 @@ initCom(PDFViewerApplication);
       originalUrl: file.name
     });
   };
-  var onOpenFile = function (evt) {
+  var onOpenFile = function () {
     this._openFileInput?.click();
   };
 }
@@ -10778,8 +10385,6 @@ function beforeUnload(evt) {
 
 ;// ./web/viewer.js
 
-const pdfjsVersion = "5.2.133";
-const pdfjsBuild = "4f7761353";
 const AppConstants = {
   LinkTarget: LinkTarget,
   RenderingStates: RenderingStates,

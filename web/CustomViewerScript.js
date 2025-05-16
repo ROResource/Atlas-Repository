@@ -1,57 +1,5 @@
 //Custom Logic
 
-//Viewport Caching and Viewer Options
-(function () {
-    let cachedViewport = null;
-  
-    // Set viewer options BEFORE viewer initialises
-    document.addEventListener('webviewerloaded', () => {
-      PDFViewerApplicationOptions.set('textLayerMode', 0); // Disable selectable text layer
-      PDFViewerApplicationOptions.set('renderInteractiveForms', false); // Disable forms
-      PDFViewerApplicationOptions.set('disableAutoFetch', false); // Enable prefetching
-      PDFViewerApplicationOptions.set('disableStream', false); // Enable streaming
-  
-      const app = window.PDFViewerApplication;
-  
-      app.initializedPromise.then(() => {
-        // Enforce vertical scroll mode and consistent zoom
-        app.pdfViewer.scrollMode = 0;
-        app.pdfViewer.currentScaleValue = 'page-height';
-  
-        // Viewport caching for identical page sizes
-        const PageViewProto = app.pdfViewer._pages[0].constructor.prototype;
-        const originalDraw = PageViewProto.draw;
-  
-        PageViewProto.draw = function (...args) {
-          if (this.renderingState === 0) {
-            if (!cachedViewport || this.scale !== cachedViewport.scale) {
-              cachedViewport = this.pdfPage.getViewport({ scale: this.scale });
-            }
-  
-            this.viewport = cachedViewport;
-  
-            // Optional: explicitly set canvas size to match viewport
-            if (this.canvas) {
-              this.canvas.width = cachedViewport.width;
-              this.canvas.height = cachedViewport.height;
-              this.canvas.style.width = `${cachedViewport.width}px`;
-              this.canvas.style.height = `${cachedViewport.height}px`;
-            }
-          }
-  
-          return originalDraw.apply(this, args);
-        };
-  
-        console.log('[PDF.js Optimiser] Viewer options and viewport caching applied');
-      });
-    });
-  
-    // Clear cached viewport on resize to re-trigger layout
-    window.addEventListener('resize', () => {
-      cachedViewport = null;
-    });
-  })();
-
 // Windo Resize Logic
 window.addEventListener('resize', () => {
     const app = window.PDFViewerApplication;
@@ -94,6 +42,7 @@ window.addEventListener('resize', () => {
       }, SCROLL_DELAY);
     }, { passive: false }); // passive: false required for preventDefault
   })();
+
 
 // Buffer Cleaning Logic
 function cleanupOffscreenPages(buffer = 3) {

@@ -229,7 +229,7 @@ html, body {
 
     aspect-ratio: 1.415 / 1;
     max-width: 90vw;
-    max-height: 90dvh;
+    max-height: 85dvh;
     max-height: 85vh;
     width: 65%;
     height: auto;
@@ -252,31 +252,30 @@ html, body {
 #customScroller {
     width: 65%;
     max-width: 90vw;
-    height: 40px;
+    height: 6dvh;
     background-color: #f5f5f5;
     border-top: 1px solid #ccc;
     box-sizing: border-box;
     user-select: none;
     touch-action: none;
     z-index: 1001;
+    align-content: middle;
   }
-  
-  
-  
   
 #scrollTrack {
   width: 100%;
-  height: 10px;
+  height: 2dvh;
   background-color: #ccc;
   border-radius: 5px;
   position: relative;
   margin: auto;
   top: 13px;
+  align-content: middle;
 }
 
 #scrollThumb {
   width: 30px;
-  height: 30px;
+  height: 4dvh;
   background-color: #007bff;
   border-radius: 50%;
   position: absolute;
@@ -370,6 +369,7 @@ html, body {
   
     #customScroller {
       width: 95%;
+
     }
   }
   
