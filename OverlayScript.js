@@ -15,7 +15,7 @@
   }
 
   function updateThumbPosition(pageNumber) {
-    if (!track || pageCount < 2) return;
+    if (!track || pageCount < 10) return;
     const step = (track.offsetWidth - thumbWidth) / (pageCount - 1);
     const left = step * (pageNumber - 1);
     thumb.style.left = `${left}px`;
@@ -80,6 +80,7 @@ function stopHold() {
   clearInterval(holdInterval);
   holdInterval = null;
   holdDirection = null;
+  currentPage = null;
 }
 
 
@@ -186,7 +187,7 @@ function stopHold() {
           }
         });
       }
-    }, 100);
+    }, 75);
   }
 
   // Attach to iframe load and refresh all
