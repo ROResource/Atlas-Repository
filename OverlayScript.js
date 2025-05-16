@@ -25,7 +25,6 @@
     const app = getPDFApp();
     if (app && page !== app.page) {
       app.page = page;
-      currentPage = page;
     }
   }
 
@@ -56,7 +55,7 @@ let holdInterval = null; // Make sure this is declared outside the function
 
 function startHold(direction) {
   stopHold(); // ⬅ always stop any running interval first
-  holdInterval = null;
+
   const app = getPDFApp();
   if (!app || !app.pdfViewer) return;
 
@@ -79,7 +78,6 @@ function stopHold() {
   clearInterval(holdInterval);
   holdInterval = null;
   holdDirection = null;
-  currentPage = page;
 }
 
 
@@ -186,7 +184,7 @@ function stopHold() {
           }
         });
       }
-    }, 75);
+    }, 100);
   }
 
   // Attach to iframe load and refresh all
