@@ -35,14 +35,22 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
 
-        function openPDF(file) {
-    const viewer = document.getElementById('pdfViewer');
-    viewer.src = 'web/viewer.html?file=../pdf/' + file + '#zoom=page-height';
-    document.getElementById('pdfOverlay').style.display = 'flex';
-    positionScrollerBelowContainer();
-    document.body.classList.add('pdf-active');
-    document.body.style.overflow = 'hidden';
+function openPDF(file) {
+  const viewer = document.getElementById('pdfViewer');
+  const overlay = document.getElementById('pdfOverlay');
 
+  viewer.src = 'web/viewer.html?file=../pdf/' + file + '#zoom=page-height';
+  overlay.style.display = 'flex';
+
+  positionScrollerBelowContainer(); // your existing custom logic
+
+  document.body.classList.add('pdf-active');
+  document.body.style.overflow = 'hidden';
+
+  // ✅ Scroll to bottom of the overlay
+  setTimeout(() => {
+    overlay.scrollTop = overlay.scrollHeight;
+  }, 50); // short delay ensures DOM is rendered first
 }
 
         function closePDF() {
