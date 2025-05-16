@@ -15,7 +15,7 @@
   }
 
   function updateThumbPosition(pageNumber) {
-    if (!track || pageCount < 10) return;
+    if (!track || pageCount < 2) return;
     const step = (track.offsetWidth - thumbWidth) / (pageCount - 1);
     const left = step * (pageNumber - 1);
     thumb.style.left = `${left}px`;
@@ -57,7 +57,6 @@ let holdInterval = null; // Make sure this is declared outside the function
 function startHold(direction) {
   stopHold(); // ⬅ always stop any running interval first
   holdInterval = null;
-  currentPage = page;
   const app = getPDFApp();
   if (!app || !app.pdfViewer) return;
 
