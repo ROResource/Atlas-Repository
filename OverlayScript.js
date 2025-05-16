@@ -7,7 +7,6 @@
   let pageCount = 1;
   let dragging = false;
   let dragInterval = null;
-  let holdInterval = null;
   let currentPage = 1;
 
   function getPDFApp() {
@@ -52,35 +51,35 @@
 
   let holdDirection = null;
 
+let holdInterval = null; // Make sure this is declared outside the function
+
 function startHold(direction) {
-  // Prevent switching direction while one is active
-  if (holdInterval !== null && holdDirection !== direction) return;
+  stopHold(); // ⬅ always stop any running interval first
 
   const app = getPDFApp();
   if (!app || !app.pdfViewer) return;
 
-  if (holdInterval === null) {
-    goToPage(app.page + direction);
-    holdDirection = direction;
+  goToPage(app.page + direction);
 
-    holdInterval = setInterval(() => {
-      const currentApp = getPDFApp();
-      if (!currentApp || !currentApp.pdfViewer) return;
+  holdInterval = setInterval(() => {
+    const currentApp = getPDFApp();
+    if (!currentApp || !currentApp.pdfViewer) return;
 
-      const currentPage = currentApp.page;
-      const newPage = currentPage + direction;
+    const currentPage = currentApp.page;
+    const newPage = currentPage + direction;
 
-      if (newPage >= 1 && newPage <= currentApp.pdfViewer.pagesCount) {
-        goToPage(newPage);
-      }
-    }, 75);
-  }
+    if (newPage >= 1 && newPage <= currentApp.pdfViewer.pagesCount) {
+      goToPage(newPage);
+    }
+  }, 75);
 }
-  function stopHold() {
-    clearInterval(holdInterval);
-    holdInterval = null;
-    holdDirection = null;
-  }
+
+function stopHold() {
+  clearInterval(holdInterval);
+  holdInterval = null;
+  holdDirection = null;
+}
+
 
   function setupNavButtonEvents() {
     const prevBtn = document.getElementById('prevPage');
