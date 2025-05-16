@@ -208,7 +208,7 @@ html, body {
     top: 0;
     left: 0;
     width: 100vw;
-    height: 100vh;
+    height: 100dvh;
     background: rgba(0, 0, 0, 0.85);
     z-index: 1000;
     display: none;
@@ -387,7 +387,9 @@ html, body {
       z-index: 1000;
       pointer-events: none;
     }
-  
+    #pdfOverlay {
+    overflow-y: auto;
+    }
     #pdfNavButtons .navButton {
       width: 15vw;              /* 15% of viewport width */
       height: 100%;
