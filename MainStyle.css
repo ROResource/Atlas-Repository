@@ -314,6 +314,8 @@ html, body {
     text-align: middle;
     user-select: none;
     transition: transform 0.01s;
+    -webkit-tap-highlight-color: transparent; /* iOS tap highlight */
+    -webkit-touch-callout: none;
   }
   
 
