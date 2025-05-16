@@ -56,7 +56,8 @@ let holdInterval = null; // Make sure this is declared outside the function
 
 function startHold(direction) {
   stopHold(); // ⬅ always stop any running interval first
-
+  holdInterval = null;
+  currentPage = page;
   const app = getPDFApp();
   if (!app || !app.pdfViewer) return;
 
