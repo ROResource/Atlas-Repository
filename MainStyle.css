@@ -229,13 +229,14 @@ html, body {
 
     aspect-ratio: 1.415 / 1;
     max-width: 90vw;
-    max-height: 85dvh;
     max-height: 85vh;
+    max-height: 85dvh;
+    
     width: 65%;
     height: auto;
   
     background: #111;
-    box-shadow: 0 0 15px #000;
+    box-shadow: 0 0 0px #000;
     overflow: hidden;
     display:block;
   }
@@ -415,3 +416,10 @@ html, body {
   user-select: none;
   -webkit-touch-callout: none;
   }  
+
+@media screen and (max-height: 500px) and (orientation: landscape) {
+  #pdfContainer {
+    height: 65vh;
+    top: 60%;
+  }
+}
