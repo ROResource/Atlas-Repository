@@ -232,8 +232,8 @@ html, body {
 
     aspect-ratio: 1.415 / 1;
     max-width: 90vw;
-    max-height: 85vh;
-    max-height: 85dvh;
+    max-height: 90vh;
+    max-height: 90dvh;
     
     width: 65%;
     height: auto;
@@ -423,7 +423,7 @@ html, body {
 
 @media screen and (max-height: 500px) and (orientation: landscape) {
   #pdfContainer {
-    height: 65vh;
-    top: 55%;
+    height: 70vh;
+    top: 45%;
   }
 }
