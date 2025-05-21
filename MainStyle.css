@@ -178,6 +178,9 @@ html, body {
     color: red;
 }
 #ShowLegend {
+    height: 7.5%;
+    min-height: 25px;
+    max-height: 75px;
     position: absolute;
     align-content: center;
     top: 5px; left: 5px;
@@ -189,7 +192,7 @@ html, body {
     border:white 2px solid;
     z-index: 1000;
     display: none;
-    font-size: Auto;       /* Size of the text (use px, em, rem, etc.) */
+    font-size: 100%;       /* Size of the text (use px, em, rem, etc.) */
     font-weight: bold;      /* Makes text bold */ /* Makes all text uppercase */
     letter-spacing: 1px;   /* Spacing between letters *//* Controls vertical spacing if multi-line */
     /* Redundant with flex centering, but safe */
@@ -253,7 +256,7 @@ html, body {
 #customScroller {
     width: 65%;
     max-width: 90vw;
-    height: 6dvh;
+    height: 6vh;
     background-color: #f5f5f5;
     border-top: 1px solid #ccc;
     box-sizing: border-box;
@@ -265,23 +268,24 @@ html, body {
   
 #scrollTrack {
   width: 100%;
-  height: 2dvh;
+  height: 30%;
   background-color: #ccc;
   border-radius: 5px;
   position: relative;
   margin: auto;
-  top: 13px;
+  top: 35%;
   align-content: middle;
+  align-self: middle;
 }
 
 #scrollThumb {
-  width: 30px;
-  height: 4dvh;
+
+  height: 200%;
+  aspect-ratio: 1 / 1;
   background-color: #007bff;
   border-radius: 50%;
   position: absolute;
-  top: -10px;
-  left: 0;
+  top: -50%;
   cursor: grab;
   transition: background-color 0.2s;
 }
@@ -420,6 +424,6 @@ html, body {
 @media screen and (max-height: 500px) and (orientation: landscape) {
   #pdfContainer {
     height: 65vh;
-    top: 60%;
+    top: 55%;
   }
 }
